@@ -20,7 +20,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Frequent Itemset Mining",
-  description: "A web demo for running frequent itemset mining experiments directly in the browser.",
+  description:
+    "A web demo for running frequent itemset mining experiments directly in the browser.",
 };
 
 export default function RootLayout({
@@ -29,17 +30,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Provider datasets={DATASETS} experiments={EXPERIMENTS}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased fixed size-full`}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased fixed size-full`}
+        suppressHydrationWarning
+      >
+        <Provider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          datasets={DATASETS}
+          experiments={EXPERIMENTS}
         >
           <AppBar />
           {children}
           <Toaster />
           <footer></footer>
-        </body>
-      </Provider>
+        </Provider>
+      </body>
     </html>
   );
 }

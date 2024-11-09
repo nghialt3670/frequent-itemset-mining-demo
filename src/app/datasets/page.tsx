@@ -1,6 +1,6 @@
 import { DatasetList } from "@/features/datasets/components/dataset-list";
 
-export default function NewExperimentPage() {
+export default function DatasetsPage() {
   return (
     <main className="p-10">
       <div className="flex items-center py-4">

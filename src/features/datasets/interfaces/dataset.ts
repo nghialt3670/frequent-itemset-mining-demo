@@ -17,7 +17,3 @@ export interface Dataset {
   isLocal?: boolean;
 }
 
-export interface DatasetFiles {
-  items: File;
-  transactions: File;
-}

@@ -25,12 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchAndCacheDatasetFiles } from "@/features/datasets/services/dataset.service";
 import { findFrequentItemsets } from "../utils/find-frequent-itemsets";
 import { useDatasets } from "@/features/datasets/hooks/use-datasets";
 import { Algorithm, Experiment } from "../interfaces/experiment";
 import { Button, ButtonProps } from "@/components/ui/button";
 import { useExperiments } from "../hooks/use-experiments";
+import { fetchAndCacheFile } from "@/utils/file.utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -86,9 +86,9 @@ export function NewExperimentDialog(props: NewExperimentDialogProps) {
 
   const onSubmit = async (data: any) => {
     const dataset = datasets.find((d) => d.id === data.datasetId)!;
-    const [fetchError, datasetFiles] = await to(
-      fetchAndCacheDatasetFiles(dataset),
-    );
+    const transactionsFileSource = dataset.transactions.fileSource;
+    const transactionsFilePromise = fetchAndCacheFile(transactionsFileSource);
+    const [fetchError, transactionsFile] = await to(transactionsFilePromise);
 
     if (fetchError) {
       toast({
@@ -111,8 +111,8 @@ export function NewExperimentDialog(props: NewExperimentDialogProps) {
     const [findError, output] = await to(
       findFrequentItemsets({
         algorithm: newExperiment.algorithm,
-        transactionsFile: datasetFiles.transactions,
         support: newExperiment.support,
+        transactionsFile,
       }),
     );
 

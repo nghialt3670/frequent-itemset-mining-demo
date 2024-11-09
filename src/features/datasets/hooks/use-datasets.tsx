@@ -12,6 +12,8 @@ import {
 import { Dataset } from "../interfaces/dataset";
 
 export interface IDatasetsContext {
+  currDataset: Dataset | undefined;
+  setCurrDataset: Dispatch<SetStateAction<Dataset | undefined>>;
   datasets: Dataset[];
   setDatasets: Dispatch<SetStateAction<Dataset[]>>;
 }
@@ -26,6 +28,9 @@ export interface DatasetsProviderProps extends PropsWithChildren {
 
 export function DatasetsProvider(props: DatasetsProviderProps) {
   const { datasets, children } = props;
+  const [localCurrDataset, setLocalCurrDataset] = useState<
+    Dataset | undefined
+  >();
   const [localDatasets, setLocalDatasets] = useState<Dataset[]>(datasets);
 
   useEffect(() => {
@@ -34,7 +39,12 @@ export function DatasetsProvider(props: DatasetsProviderProps) {
 
   return (
     <DatasetsContext.Provider
-      value={{ datasets: localDatasets, setDatasets: setLocalDatasets }}
+      value={{
+        currDataset: localCurrDataset,
+        setCurrDataset: setLocalCurrDataset,
+        datasets: localDatasets,
+        setDatasets: setLocalDatasets,
+      }}
     >
       {children}
     </DatasetsContext.Provider>

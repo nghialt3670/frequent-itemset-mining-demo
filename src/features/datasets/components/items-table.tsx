@@ -13,9 +13,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { ChevronsUpDown, ScanSearch } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { FlaskConical } from "lucide-react";
-import Link from "next/link";
+import to from "await-to-js";
 import {
   Table,
   TableBody,
@@ -24,106 +24,93 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import TooltipIconButton from "@/components/custom/buttons/tooltip-icon-button";
-import { useExperiments } from "../hooks/use-experiments";
-import { Experiment } from "../interfaces/experiment";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Item } from "../interfaces/item";
 import { cn } from "@/lib/utils";
 
-const ALGORITHM_MAPPINGS: Record<string, string> = {
-  apriori: "Apriori",
-  "fp-growth": "FP-Growth",
-};
+import { ChevronUp, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import TooltipIconButton from "@/components/custom/buttons/tooltip-icon-button";
+import { Input } from "@/components/ui/input";
 
-export const columns: ColumnDef<Experiment>[] = [
+export const columns: ColumnDef<Item>[] = [
   {
     accessorKey: "id",
+    size: 100,
     header: "ID",
     cell: ({ row }) => <div>{row.getValue("id")}</div>,
   },
   {
-    id: "dataset.name",
-    accessorKey: "dataset.name",
-    header: () => <div className="text-right">Dataset</div>,
+    accessorKey: "name",
+    size: 300,
+    header: () => <div>Name</div>,
     cell: ({ row }) => (
-      <Link className="flex" href={`/datasets/${row.original.dataset.id}`}>
-        <Button className="ml-auto px-0" variant="link">
-          {row.original.dataset.name}
-        </Button>
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "algorithm",
-    header: () => <div className="text-right">Algorithm</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        {ALGORITHM_MAPPINGS[row.getValue("algorithm") as string]}
+      <div className="flex items-center space-x-2">
+        <span>{row.original.name}</span>
       </div>
     ),
   },
   {
-    accessorKey: "support",
-    header: () => <div className="text-right">Support</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        {row.getValue<number>("support").toFixed(3)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "runTime",
-    header: () => <div className="text-right">Run time (s)</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        {row.getValue<number>("runTime")
-          ? row.getValue<number>("runTime").toFixed(3)
-          : "---"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "itemsets.quantity",
-    header: () => <div className="text-right">#Itemsets</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        {row.original.itemsets?.quantity ?? "---"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: () => <div className="text-right">Status</div>,
-    cell: ({ row }) => (
-      <div className="text-right">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    id: "playground",
-    cell: ({ row }) => {
-      const experiment = row.original;
-
-      return (
-        <div className="text-right">
-          {row.original.status === "done" ? (
-            <Link href={`/experiments/${experiment.id}`}>
-              <TooltipIconButton text="Playground">
-                <FlaskConical />
-              </TooltipIconButton>
-            </Link>
+    accessorKey: "supportCount",
+    size: 100,
+    header: ({ column }) => (
+      <div className="flex items-center justify-end space-x-1">
+        <span>Support Count</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            if (!column.getIsSorted()) {
+              column.toggleSorting(false);
+            } else if (column.getIsSorted() === "asc") {
+              column.toggleSorting(true);
+            } else {
+              column.clearSorting();
+            }
+          }}
+        >
+          {column.getIsSorted() === "asc" ? (
+            <ChevronUp />
+          ) : column.getIsSorted() === "desc" ? (
+            <ChevronDown />
           ) : (
-            <TooltipIconButton text="Playground" disabled>
-              <FlaskConical />
-            </TooltipIconButton>
+            <ChevronsUpDown />
           )}
-        </div>
-      );
-    },
+        </Button>
+      </div>
+    ),
+
+    cell: ({ row }) => (
+      <div className="text-right">{row.original.supportCount}</div>
+    ),
+  },
+  {
+    id: "search",
+    cell: ({ row }) => (
+      <div className="text-right">
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => {
+            const itemName = row.original.name;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(itemName)}&tbm=isch`;
+            window.open(googleSearchUrl, "_blank");
+          }}
+        >
+          <ScanSearch />
+        </Button>
+      </div>
+    ),
   },
 ];
 
-export function ExperimentTable() {
-  const { experiments } = useExperiments();
+export interface ItemsTableProps {
+  items: Item[];
+  isLoading: boolean;
+}
+
+export function ItemsTable({ items, isLoading }: ItemsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -132,10 +119,9 @@ export function ExperimentTable() {
     pageIndex: 0,
     pageSize: 10,
   });
-  const numPrevExperimentsRef = useRef<number>(0);
 
   const table = useReactTable({
-    data: experiments,
+    data: items,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -156,17 +142,18 @@ export function ExperimentTable() {
     autoResetPageIndex: false,
   });
 
-  useEffect(() => {
-    if (experiments.length === numPrevExperimentsRef.current + 1) {
-      table.setPageIndex(
-        Math.floor(experiments.length / (pagination.pageSize + 0.1)),
-      );
-    }
-    numPrevExperimentsRef.current = experiments.length;
-  }, [experiments, table, pagination.pageSize]);
-
   return (
     <div className={cn("w-full")}>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -186,7 +173,16 @@ export function ExperimentTable() {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -221,7 +217,7 @@ export function ExperimentTable() {
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            disabled={!table.getCanPreviousPage() || isLoading}
           >
             Previous
           </Button>
@@ -229,7 +225,7 @@ export function ExperimentTable() {
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            disabled={!table.getCanNextPage() || isLoading}
           >
             Next
           </Button>

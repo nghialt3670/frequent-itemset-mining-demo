@@ -1,6 +1,8 @@
+import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import React from "react";
-import { Button } from "./ui/button";
+import TooltipIconButton from "./custom/buttons/tooltip-icon-button";
+import ThemeToggle from "./theme-toggle";
 import { Sidebar } from "./sidebar";
 
 export function AppBar() {
@@ -10,11 +12,14 @@ export function AppBar() {
         <Sidebar className="mr" />
         <h1 className="font-bold text-2xl">Frequent Itemset Mining</h1>
       </div>
-      <Link href="https://github.com/nghialt3670/frequent-itemset-mining-demo">
-        <Button className="rounded-full" size="icon" variant="ghost">
-          <img src="icons/github.svg" className="size-6" />
-        </Button>
-      </Link>
+      <div className="flex flex-row justify-center items-center">
+        <ThemeToggle />
+        <Link href="https://github.com/nghialt3670/frequent-itemset-mining-demo">
+          <TooltipIconButton text="Go to Github">
+            <FaGithub />
+          </TooltipIconButton>
+        </Link>
+      </div>
     </header>
   );
 }

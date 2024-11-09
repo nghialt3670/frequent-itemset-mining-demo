@@ -68,6 +68,9 @@ export function DatasetCard(props: DatasetCardProps) {
         <Link href={`/experiments?datasetId=${dataset.id}`}>
           <Button>Experiment</Button>
         </Link>
+        <Link href={`/datasets/${dataset.id}`}>
+          <Button variant="secondary">Details</Button>
+        </Link>
         <Button
           className="ml-auto"
           variant={"link"}
