@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import to from "await-to-js";
 import { useToast } from "@/hooks/use-toast";
+import { clear } from "idb-keyval";
 
 const ALGORITHM_MAPPINGS: Record<string, string> = {
   apriori: "Apriori",
@@ -181,6 +182,18 @@ export function ExperimentTable() {
     onPaginationChange: setPagination,
     autoResetPageIndex: false,
   });
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      clear();
+    };
+  
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     if (experiments.length === numPrevExperimentsRef.current + 1) {
