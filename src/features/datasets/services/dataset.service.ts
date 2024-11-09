@@ -1,12 +1,13 @@
-import { createStore, get, set } from "idb-keyval";
+import { get, set } from "idb-keyval";
 import { Dataset, DatasetFiles } from "../interfaces/dataset";
-
-// const datasetStore = createStore("fim", "datasets")
 
 export async function fetchAndCacheDatasetFiles(
   dataset: Dataset,
 ): Promise<DatasetFiles> {
-  const cachedDatasetFiles = await get<DatasetFiles>(dataset.id);
+  const filesSrc = dataset.items.fileSource.concat(
+    dataset.transactions.fileSource,
+  );
+  const cachedDatasetFiles = await get<DatasetFiles>(filesSrc);
 
   if (cachedDatasetFiles) {
     return cachedDatasetFiles;
@@ -32,7 +33,7 @@ export async function fetchAndCacheDatasetFiles(
     transactions: transactionsFile,
   };
 
-  await set(dataset.id, datasetFiles);
+  await set(filesSrc, datasetFiles);
 
   return datasetFiles;
 }

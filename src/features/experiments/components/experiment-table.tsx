@@ -13,8 +13,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Download } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Download } from "lucide-react";
 import to from "await-to-js";
 import {
   Table,

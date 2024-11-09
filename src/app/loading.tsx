@@ -1,6 +1,3 @@
 export default function RootLoading() {
-  return (
-    <main className="flex justify-center items-center">
-    </main>
-  );
+  return <main className="flex justify-center items-center"></main>;
 }

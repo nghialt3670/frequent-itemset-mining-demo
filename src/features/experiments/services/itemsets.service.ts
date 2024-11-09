@@ -1,10 +1,6 @@
 import { get, set } from "idb-keyval";
 import { Experiment } from "../interfaces/experiment";
 
-import { createStore } from "idb-keyval";
-
-// const itemsetsStore = createStore("fim", "itemsets")
-
 export async function fetchAndCacheItemsetsFile(
   experiment: Experiment,
 ): Promise<File | null> {
@@ -12,7 +8,7 @@ export async function fetchAndCacheItemsetsFile(
     throw new Error("Itemsets missing");
   }
 
-  const cachedDatasetFiles = await get<File>(experiment.id);
+  const cachedDatasetFiles = await get<File>(experiment.itemsets.fileSource);
 
   if (cachedDatasetFiles) {
     return cachedDatasetFiles;
@@ -25,7 +21,7 @@ export async function fetchAndCacheItemsetsFile(
   const itemsetsBlob = await response.blob();
   const itemsetsFile = new File([itemsetsBlob], "itemsets.txt");
 
-  await set(experiment.id, itemsetsFile);
+  await set(experiment.itemsets.fileSource, itemsetsFile);
 
   return itemsetsFile;
 }

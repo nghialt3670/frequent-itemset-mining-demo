@@ -32,7 +32,7 @@ export default function RootLayout({
     <html lang="en">
       <Provider datasets={DATASETS} experiments={EXPERIMENTS}>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased fixed size-full`}
         >
           <AppBar />
           {children}

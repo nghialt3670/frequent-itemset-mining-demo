@@ -30,6 +30,13 @@ export function Sidebar(props: SidebarProps) {
           </SheetDescription>
         </SheetHeader>
         <div className="border flex flex-col h-full rounded-lg gap-1 p-2">
+          <Link href={"/"}>
+            <SheetClose asChild>
+              <Button className="text-2xl w-full" variant="link">
+                Slides
+              </Button>
+            </SheetClose>
+          </Link>
           <Link href={"/datasets"}>
             <SheetClose asChild>
               <Button className="text-2xl w-full" variant="link">
