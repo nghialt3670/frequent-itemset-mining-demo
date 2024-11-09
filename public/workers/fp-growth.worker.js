@@ -35,20 +35,25 @@ self.onmessage = (event) => {
       .split("\n")
       .map((line) => line.split(" ").map((item) => item.trim()));
 
+    const start = performance.now();
+
     new FPGrowth(support)
       .exec(transactions)
       .then((itemsets) => {
+        const end = performance.now();
+        const runTime = Math.round(end - start);
+
         const itemsetsText = itemsets
-          .map((itemset) => itemset.items.join(" "))
+          .map((itemset) => `${itemset.items.join(" ")} : ${itemset.support}`)
           .join("\n");
 
         const blob = new Blob([itemsetsText], { type: "text/plain" });
-        const itemsetsFile = new File([blob], `frequent-itemsets.txt`, {
-          type: "text/plain",
-        });
+        const filename = `apriori-${support}-${runTime}.txt`;
+        const itemsetsFile = new File([blob], filename, { type: "text/plain" });
 
         self.postMessage({
           quantity: itemsets.length,
+          runTime,
           itemsetsFile,
         });
       })

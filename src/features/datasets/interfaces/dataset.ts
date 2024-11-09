@@ -16,4 +16,3 @@ export interface Dataset {
   transactions: Transactions;
   isLocal?: boolean;
 }
-

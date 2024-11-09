@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 
 import { ChevronUp, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import TooltipIconButton from "@/components/custom/buttons/tooltip-icon-button";
+import { TooltipIconButton } from "@/components/custom/buttons/tooltip-icon-button";
 import { Input } from "@/components/ui/input";
 
 export const columns: ColumnDef<Item>[] = [

@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 
-interface TooltipIconButtonProps extends ButtonProps {
+export interface TooltipIconButtonProps extends ButtonProps {
   text: string;
   children: ReactNode;
 }
 
-export default function TooltipIconButton(props: TooltipIconButtonProps) {
+export function TooltipIconButton(props: TooltipIconButtonProps) {
   const { text, children } = props;
 
   return (

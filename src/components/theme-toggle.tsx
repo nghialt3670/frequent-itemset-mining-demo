@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import TooltipIconButton from "./custom/buttons/tooltip-icon-button";
+import { TooltipIconButton } from "./custom/buttons/tooltip-icon-button";
 import { ButtonProps } from "@/components/ui/button";
 
 export interface ThemeToggleProps extends ButtonProps {}

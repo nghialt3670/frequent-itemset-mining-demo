@@ -43,7 +43,7 @@ const DEFAULT_ALGORITHM: Algorithm = "apriori";
 
 export interface NewExperimentDialogProps extends ButtonProps {}
 
-const NewExperimentSchema = z.object({
+const newExperimentSchema = z.object({
   datasetId: z.string().min(1, "Dataset is required"),
   algorithm: z.enum(["apriori", "fp-growth"], {
     errorMap: () => ({ message: "Algorithm is required" }),
@@ -76,7 +76,7 @@ export function NewExperimentDialog(props: NewExperimentDialogProps) {
     formState: { errors },
   } = useForm({
     mode: "onSubmit",
-    resolver: zodResolver(NewExperimentSchema),
+    resolver: zodResolver(newExperimentSchema),
     defaultValues: {
       datasetId: DEFAULT_DATASET_ID,
       algorithm: DEFAULT_ALGORITHM,

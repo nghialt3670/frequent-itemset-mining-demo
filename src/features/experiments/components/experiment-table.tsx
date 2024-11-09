@@ -14,7 +14,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useRef, useState } from "react";
-import { FlaskConical } from "lucide-react";
+import { Download } from "lucide-react";
 import Link from "next/link";
 import {
   Table,
@@ -24,11 +24,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import TooltipIconButton from "@/components/custom/buttons/tooltip-icon-button";
+import { TooltipIconButton } from "@/components/custom/buttons/tooltip-icon-button";
+import { ExperimentPlaygroundDialog } from "./experiment-playground-dialog";
 import { useExperiments } from "../hooks/use-experiments";
+import { fetchAndCacheFile } from "@/utils/file.utils";
 import { Experiment } from "../interfaces/experiment";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import to from "await-to-js";
+import { useToast } from "@/hooks/use-toast";
 
 const ALGORITHM_MAPPINGS: Record<string, string> = {
   apriori: "Apriori",
@@ -77,7 +81,7 @@ export const columns: ColumnDef<Experiment>[] = [
     cell: ({ row }) => (
       <div className="text-right">
         {row.getValue<number>("runTime")
-          ? row.getValue<number>("runTime").toFixed(3)
+          ? (row.getValue<number>("runTime") / 1000).toFixed(3)
           : "---"}
       </div>
     ),
@@ -99,23 +103,45 @@ export const columns: ColumnDef<Experiment>[] = [
     ),
   },
   {
-    id: "playground",
+    id: "action",
     cell: ({ row }) => {
+      const { toast } = useToast()
       const experiment = row.original;
+
+      const handleDownloadClick = async () => {
+        const itemsetsFileSource = experiment.itemsets!.fileSource;
+        const [error, itemsetsFile] = await to(fetchAndCacheFile(itemsetsFileSource));
+
+        if (error) {
+          toast({
+            title: "Something went wrong!",
+            description: "Failed to download itemsets file.",
+          });
+          return;
+        }
+
+        const link = document.createElement("a");
+
+        link.href = URL.createObjectURL(itemsetsFile);
+        link.download = `${experiment.dataset.name.toLowerCase()}-${itemsetsFile.name}`;
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+      };
 
       return (
         <div className="text-right">
-          {row.original.status === "done" ? (
-            <Link href={`/experiments/${experiment.id}`}>
-              <TooltipIconButton text="Playground">
-                <FlaskConical />
-              </TooltipIconButton>
-            </Link>
-          ) : (
-            <TooltipIconButton text="Playground" disabled>
-              <FlaskConical />
-            </TooltipIconButton>
-          )}
+          <TooltipIconButton
+            text="Download itemsets file"
+            onClick={handleDownloadClick}
+            disabled={experiment.status !== "done"}
+          >
+            <Download />
+          </TooltipIconButton>
+          <ExperimentPlaygroundDialog
+            experiment={experiment}
+            disabled={experiment.status !== "done"}
+          />
         </div>
       );
     },

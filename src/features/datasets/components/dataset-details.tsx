@@ -3,7 +3,7 @@
 import { Download } from "lucide-react";
 import { useMemo } from "react";
 import Link from "next/link";
-import TooltipIconButton from "@/components/custom/buttons/tooltip-icon-button";
+import { TooltipIconButton } from "@/components/custom/buttons/tooltip-icon-button";
 import { useTransactions } from "../hooks/use-transactions";
 import { Button } from "@/components/ui/button";
 import { Dataset } from "../interfaces/dataset";

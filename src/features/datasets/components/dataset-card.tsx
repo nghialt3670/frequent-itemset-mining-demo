@@ -1,3 +1,4 @@
+import to from "await-to-js";
 import Link from "next/link";
 import JSZip from "jszip";
 import {
@@ -8,10 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { fetchAndCacheFile } from "@/utils/file.utils";
 import { Button } from "@/components/ui/button";
 import { Dataset } from "../interfaces/dataset";
-import to from "await-to-js";
-import { fetchAndCacheFile } from "@/utils/file.utils";
 import { useToast } from "@/hooks/use-toast";
 
 export interface DatasetCardProps {
@@ -23,30 +23,32 @@ export function DatasetCard(props: DatasetCardProps) {
   const { toast } = useToast();
 
   const handleDownloadClick = async () => {
-    const [error, files] = await to(Promise.all([
-      fetchAndCacheFile(dataset.items.fileSource),
-      fetchAndCacheFile(dataset.transactions.fileSource)
-    ]))
+    const [error, files] = await to(
+      Promise.all([
+        fetchAndCacheFile(dataset.items.fileSource),
+        fetchAndCacheFile(dataset.transactions.fileSource),
+      ]),
+    );
 
     if (error) {
       toast({
         title: "Something went wrong!",
-        description: "Failed to download dataset files"
-      })
+        description: "Failed to download dataset files.",
+      });
       return;
     }
 
     const zip = new JSZip();
 
-    const itemsFile = files[0]
-    const transactionsFile = files[1]
+    const itemsFile = files[0];
+    const transactionsFile = files[1];
 
     zip.file(itemsFile.name, itemsFile);
     zip.file(transactionsFile.name, transactionsFile);
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
       const link = document.createElement("a");
-      
+
       link.href = URL.createObjectURL(content);
       link.download = `${dataset.name.toLowerCase()}.zip`;
       link.click();

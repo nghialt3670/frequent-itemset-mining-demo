@@ -1,7 +1,7 @@
 import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import React from "react";
-import TooltipIconButton from "./custom/buttons/tooltip-icon-button";
+import { TooltipIconButton } from "./custom/buttons/tooltip-icon-button";
 import ThemeToggle from "./theme-toggle";
 import { Sidebar } from "./sidebar";
 

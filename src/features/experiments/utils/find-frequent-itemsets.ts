@@ -19,8 +19,6 @@ export async function findFrequentItemsets(
     const workerPath = `workers/${input.algorithm}.worker.bundle.js`;
     const worker = new Worker(workerPath);
 
-    const startTime = performance.now();
-
     worker.postMessage({
       support: input.support,
       transactionsFile: input.transactionsFile,
@@ -31,13 +29,7 @@ export async function findFrequentItemsets(
     };
 
     worker.onmessage = (e) => {
-      const endTime = performance.now();
-      const runTime = Number(((endTime - startTime) / 1000).toFixed(3));
-
-      const quantity = e.data.quantity as number;
-      const itemsetsFile = e.data.itemsetsFile as File;
-
-      resolve({ quantity, runTime, itemsetsFile });
+      resolve(e.data);
     };
   });
 }
