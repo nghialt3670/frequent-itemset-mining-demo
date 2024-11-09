@@ -48,7 +48,7 @@ self.onmessage = (event) => {
           .join("\n");
 
         const blob = new Blob([itemsetsText], { type: "text/plain" });
-        const filename = `apriori-${support}-${runTime}.txt`;
+        const filename = `fp-growth-${support}-${runTime}.txt`;
         const itemsetsFile = new File([blob], filename, { type: "text/plain" });
 
         self.postMessage({
