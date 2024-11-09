@@ -13,8 +13,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Download, MoreHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Download } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import to from "await-to-js";
 import {
   Table,
@@ -25,7 +25,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { fetchAndCacheItemsetsFile } from "../services/itemsets.service";
-import { NewExperimentDialog } from "./new-experiment-dialog";
 import { useExperiments } from "../hooks/use-experiments";
 import { Experiment } from "../interfaces/experiment";
 import { Button } from "@/components/ui/button";
@@ -150,6 +149,7 @@ export function ExperimentTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const numPrevExperimentsRef = useRef<number>(0);
 
   const table = useReactTable({
     data: experiments,
@@ -174,10 +174,13 @@ export function ExperimentTable() {
   });
 
   useEffect(() => {
-    if (table.getCanNextPage() && table.getRowCount() / 10 > pagination.pageIndex) {
-      table.nextPage();
+    if (experiments.length === numPrevExperimentsRef.current + 1) {
+      table.setPageIndex(
+        Math.floor(experiments.length / (pagination.pageSize + 0.1)),
+      );
     }
-  }, [experiments, table]);
+    numPrevExperimentsRef.current = experiments.length;
+  }, [experiments, table, pagination.pageSize]);
 
   return (
     <div className={cn("w-full")}>

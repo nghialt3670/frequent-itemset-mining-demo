@@ -40,7 +40,7 @@ export function useDatasetFiles(dataset: Dataset) {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [dataset]);
 
   return { datasetFiles, loading, error };
 }

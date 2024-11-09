@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import GithubIcon from "../../public/icons/github.svg";
 import { Button } from "./ui/button";
 import { Sidebar } from "./sidebar";
 
@@ -13,7 +12,7 @@ export function AppBar() {
       </div>
       <Link href="https://github.com/nghialt3670/frequent-itemset-mining-demo">
         <Button className="rounded-full" size="icon" variant="ghost">
-          <img src="/icons/github.svg" className="size-6" />
+          <img src="icons/github.svg" className="size-6" />
         </Button>
       </Link>
     </header>

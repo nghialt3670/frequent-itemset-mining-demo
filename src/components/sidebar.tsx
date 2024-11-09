@@ -5,7 +5,6 @@ import {
   SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -22,7 +21,7 @@ export function Sidebar(props: SidebarProps) {
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent className="flex flex-col" side="left">
         <SheetHeader>
           <SheetTitle>Frequent Itemset Mining</SheetTitle>
           <SheetDescription>
@@ -30,23 +29,21 @@ export function Sidebar(props: SidebarProps) {
             in the browser.
           </SheetDescription>
         </SheetHeader>
-        <div className="mt-6">
-          <div className="flex flex-col">
-            <Link href={"/datasets"}>
-              <SheetClose asChild>
-                <Button className="text-2xl w-full" variant="link">
-                  Datasets
-                </Button>
-              </SheetClose>
-            </Link>
-            <Link href={"/experiments"}>
-              <SheetClose asChild>
-                <Button className="text-2xl w-full" variant="link">
-                  Experiments
-                </Button>
-              </SheetClose>
-            </Link>
-          </div>
+        <div className="border flex flex-col h-full rounded-lg gap-1 p-2">
+          <Link href={"/datasets"}>
+            <SheetClose asChild>
+              <Button className="text-2xl w-full" variant="link">
+                Datasets
+              </Button>
+            </SheetClose>
+          </Link>
+          <Link href={"/experiments"}>
+            <SheetClose asChild>
+              <Button className="text-2xl w-full" variant="link">
+                Experiments
+              </Button>
+            </SheetClose>
+          </Link>
         </div>
       </SheetContent>
     </Sheet>

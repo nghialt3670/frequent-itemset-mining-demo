@@ -18,7 +18,7 @@ export const EXPERIMENTS: Experiment[] = [
     id: "1",
     dataset: DATASETS[0],
     algorithm: "apriori",
-    runTime: 1194.579,
+    runTime: 2410.592,
     support: 0.002,
     itemsets: {
       quantity: 1030,

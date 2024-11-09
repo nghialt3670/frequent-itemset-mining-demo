@@ -12,7 +12,7 @@ export function DatasetList(props: DatasetListProps) {
   const { datasets } = useDatasets();
 
   return (
-    <div className={cn("flex flex-col space-y-4 p-4", className)}>
+    <div className={cn("flex flex-col space-y-4", className)}>
       {datasets.map((dataset) => (
         <DatasetCard key={dataset.id} dataset={dataset} />
       ))}
