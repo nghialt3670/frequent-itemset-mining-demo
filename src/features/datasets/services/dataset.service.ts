@@ -15,7 +15,7 @@ export async function fetchAndCacheDatasetFiles(
 
   const responses = await Promise.all([
     fetch(dataset.items.fileSource),
-    fetch(dataset.items.fileSource),
+    fetch(dataset.transactions.fileSource),
   ]);
 
   if (responses.some((response) => !response.ok)) {
