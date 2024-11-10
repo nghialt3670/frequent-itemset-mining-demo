@@ -15,6 +15,8 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useRef, useState } from "react";
 import { Download } from "lucide-react";
+import { clear } from "idb-keyval";
+import to from "await-to-js";
 import Link from "next/link";
 import {
   Table,
@@ -30,10 +32,8 @@ import { useExperiments } from "../hooks/use-experiments";
 import { fetchAndCacheFile } from "@/utils/file.utils";
 import { Experiment } from "../interfaces/experiment";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import to from "await-to-js";
 import { useToast } from "@/hooks/use-toast";
-import { clear } from "idb-keyval";
+import { cn } from "@/lib/utils";
 
 const ALGORITHM_MAPPINGS: Record<string, string> = {
   apriori: "Apriori",
@@ -106,12 +106,14 @@ export const columns: ColumnDef<Experiment>[] = [
   {
     id: "action",
     cell: ({ row }) => {
-      const { toast } = useToast()
+      const { toast } = useToast();
       const experiment = row.original;
 
       const handleDownloadClick = async () => {
         const itemsetsFileSource = experiment.itemsets!.fileSource;
-        const [error, itemsetsFile] = await to(fetchAndCacheFile(itemsetsFileSource));
+        const [error, itemsetsFile] = await to(
+          fetchAndCacheFile(itemsetsFileSource),
+        );
 
         if (error) {
           toast({
@@ -187,11 +189,11 @@ export function ExperimentTable() {
     const handleBeforeUnload = () => {
       clear();
     };
-  
-    window.addEventListener('beforeunload', handleBeforeUnload);
-  
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 

@@ -30,7 +30,7 @@ export function ExperimentPlaygroundDialog(
       </DialogTrigger>
       <DialogContent className="w-full rounded-xl">
         <DialogHeader>
-          <DialogTitle>Experiment Playground</DialogTitle>
+          <DialogTitle>Playground</DialogTitle>
           <DialogDescription>
             Use frequent itemsets to explore association rules.
           </DialogDescription>
