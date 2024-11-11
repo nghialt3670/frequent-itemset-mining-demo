@@ -58,9 +58,15 @@ export function AssociationRuleMining(props: AssociationRuleMiningProps) {
     return Array.from(itemIdSet).map((itemId) => idToItem[itemId]);
   }, [itemsets, idToItem]);
 
+  console.log(frequentItems)
+
   const itemOptions = useMemo(() => {
     return frequentItems
       .filter((item) => {
+        // TODO: Fix item id undefined
+        if (!item.id) {
+          return false
+        }
         for (const itemset of itemsets) {
           if (
             ImmutableSet([...antecedent, item.id]).isSubset(itemset.itemIds)
