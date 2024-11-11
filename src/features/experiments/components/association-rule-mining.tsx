@@ -114,7 +114,7 @@ export function AssociationRuleMining(props: AssociationRuleMiningProps) {
           />
         </div>
       </div>
-      <Label>Im sure that he/she would also buy:</Label>
+      <Label>He/she would also buy:</Label>
       <div className="h-[400px] overflow-y-scroll">
         {associationRules.length === 0 ? (
           <div>Nothing!</div>
